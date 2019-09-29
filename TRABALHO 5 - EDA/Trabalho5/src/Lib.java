@@ -1,4 +1,3 @@
-
 public class Lib {
 	
 	static void trocaFilhos (Heap a) {
@@ -12,11 +11,48 @@ public class Lib {
 
 	    if (h2 == null) return h1;
 	    
-	    if(h1.valor > h2.valor)
+	    if(densidadeObjeto(h1) > densidadeObjeto(h2) || (densidadeObjeto(h1) == densidadeObjeto(h2) && h1.peso < h2.peso))
 	    	return uniaoHeaps(h1, h2);
 	    else
 	    	return uniaoHeaps(h2, h1);
 		
+	}
+	
+	static int densidadeObjeto(Heap h) {
+		return (h.valor/h.peso);
+	}
+	
+	static Heap remover(Heap h) {
+		if(h == null)
+			System.out.println("Não há elementos");
+		
+		else {
+			Heap aux = h;
+			h = uniao(h.esq, h.dir);
+			aux.dir = null;
+			aux.esq = null;
+		}
+		
+		return h;
+	}
+	
+	
+	static Heap preencherMochila(Mochila m, Heap h) {
+		Heap novo;
+		
+		if(m.pesoAtual == 0 && h.peso > m.pesoMax) {
+			System.out.println("Peso máximo da mochila é menor que o peso do primeiro elemento");
+			return h;
+		}
+		
+		while( (m.pesoAtual+h.peso) <= m.pesoMax) {
+			novo = remover(h);
+			m.pesoAtual += h.peso; 
+			m.elementos = uniao(m.elementos, h);
+			h = novo;
+		}
+		
+		return h;
 	}
 	
 	static Heap uniaoHeaps(Heap h1, Heap h2) {
@@ -34,7 +70,7 @@ public class Lib {
 	static void imprime(Heap h) {
 		System.out.print("<");
 		if (h != null){
-			System.out.print(h.valor); 
+			System.out.print(h.valor + ":" + h.peso); 
 			imprime(h.esq); 
 			imprime(h.dir); 
 		}
